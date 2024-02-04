@@ -33,12 +33,14 @@ rl.question('Enter path to the folder: ', (directoryPath) => {
               return;
             }
           } else if (position.toLowerCase() === 'end') {
-            //  or end of the file name!
-            if (file.endsWith(textToRemove)) {
-              newFileName = file.slice(0, -textToRemove.length);
+            // Remove from anywhere in the file name
+            if (file.includes(textToRemove)) {
+              // treat special sign as literal characters in regular expression pattern
+              const escapedTextToRemove = textToRemove.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+              newFileName = file.replace(new RegExp(escapedTextToRemove, 'g'), '');
             } else {
-              // keyword not found at the end err
-              console.error(`Error: Keyword "${textToRemove}" not found at the end of ${file}.`);
+              // Keyword not found in the file name
+              console.error(`Error: Keyword "${textToRemove}" not found in ${file}.`);
               return;
             }
           } else {
